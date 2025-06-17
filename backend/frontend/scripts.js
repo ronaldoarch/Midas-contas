@@ -6,8 +6,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const refreshButton = document.getElementById('refreshButton');
     const alertsList = document.getElementById('alertsList');
     const accountsList = document.getElementById('accountsList');
+    const showAllButton = document.getElementById('showAllButton');
+
+    // Armazenar contas ocultas
+    let hiddenAccounts = new Set();
 
     const createAccountCard = (account) => {
+        if (hiddenAccounts.has(account.id)) return null;
         const card = document.createElement('div');
         card.className = `account-card ${account.hasAlert ? 'alert' : 'ok'}`;
         
@@ -18,8 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
             ${account.type === 'CREDIT_CARD' ? `<p>Status do Cartão: ${account.cardStatus}</p>` : ''}
             <p>Saldo: ${account.balance}</p>
             ${account.hasAlert ? `<p class="alert-message">${account.alertMessage}</p>` : ''}
+            <button class="minimize-btn" data-id="${account.id}">Minimizar</button>
         `;
-        
         card.innerHTML = content;
         return card;
     };
@@ -34,13 +39,24 @@ document.addEventListener('DOMContentLoaded', () => {
             alertsList.innerHTML = '<p>Nenhum alerta ativo</p>';
         } else {
             data.alerts.forEach(account => {
-                alertsList.appendChild(createAccountCard(account));
+                const card = createAccountCard(account);
+                if (card) alertsList.appendChild(card);
             });
         }
 
         // Atualizar todas as contas
         data.accounts.forEach(account => {
-            accountsList.appendChild(createAccountCard(account));
+            const card = createAccountCard(account);
+            if (card) accountsList.appendChild(card);
+        });
+
+        // Adicionar eventos aos botões de minimizar
+        document.querySelectorAll('.minimize-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = btn.getAttribute('data-id');
+                hiddenAccounts.add(id);
+                updateUI(data);
+            });
         });
     };
 
@@ -67,4 +83,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Configurar botão de atualização
     refreshButton.addEventListener('click', fetchData);
+
+    // Botão para mostrar todas as contas novamente
+    showAllButton.addEventListener('click', () => {
+        hiddenAccounts.clear();
+        fetchData();
+    });
 }); 
