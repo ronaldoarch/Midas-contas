@@ -89,4 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
         hiddenAccounts.clear();
         fetchData();
     });
+
+    // Atualização automática a cada 5 minutos (300.000 ms)
+    setInterval(fetchData, 300000);
 }); 
