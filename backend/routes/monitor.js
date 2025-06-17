@@ -43,6 +43,14 @@ router.get('/checkAllAccounts', async (req, res) => {
                 saldoFinal = formatBalance(Number(details.balance));
             }
 
+            // Extrair valor numérico do saldo
+            let saldoNumerico = null;
+            if (saldoDisplay) {
+                saldoNumerico = Number(saldoDisplay.replace(/\./g, '').replace(',', '.'));
+            } else if (details.balance !== undefined && details.balance !== null && details.balance !== '') {
+                saldoNumerico = Number(details.balance);
+            }
+
             const accountData = {
                 id: details.id,
                 name: details.name || 'Não disponível',
@@ -57,10 +65,9 @@ router.get('/checkAllAccounts', async (req, res) => {
             // Alerta de saldo baixo para qualquer conta (exceto cartão) com saldo < 30
             if (
                 accountData.type !== 'CREDIT_CARD' &&
-                details.balance !== undefined &&
-                details.balance !== null &&
-                details.balance !== '' &&
-                checkPixBalance(Number(details.balance))
+                saldoNumerico !== null &&
+                !isNaN(saldoNumerico) &&
+                checkPixBalance(saldoNumerico)
             ) {
                 accountData.hasAlert = true;
                 accountData.alertMessage = '🔴 ALERTA: Saldo abaixo de R$30,00';
