@@ -54,8 +54,9 @@ router.get('/checkAllAccounts', async (req, res) => {
             };
 
             // Verificar alertas
+            // Alerta de saldo baixo para qualquer conta (exceto cartão) com saldo < 30
             if (
-                accountData.type === 'PIX' &&
+                accountData.type !== 'CREDIT_CARD' &&
                 details.balance !== undefined &&
                 details.balance !== null &&
                 details.balance !== '' &&
@@ -64,7 +65,13 @@ router.get('/checkAllAccounts', async (req, res) => {
                 accountData.hasAlert = true;
                 accountData.alertMessage = '🔴 ALERTA: Saldo abaixo de R$30,00';
                 alerts.push(accountData);
-            } else if (accountData.type === 'CREDIT_CARD' && checkCardStatus(accountData.cardStatus)) {
+            }
+            // Alerta de problema no cartão SOMENTE se o status for diferente de 'ACTIVE'
+            else if (
+                accountData.type === 'CREDIT_CARD' &&
+                accountData.cardStatus &&
+                checkCardStatus(accountData.cardStatus)
+            ) {
                 accountData.hasAlert = true;
                 accountData.alertMessage = '🔴 ALERTA: Problema no cartão';
                 alerts.push(accountData);
