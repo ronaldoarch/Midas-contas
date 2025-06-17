@@ -52,13 +52,24 @@ class MetaService {
 
     async getUserAdAccounts() {
         try {
-            const response = await axios.get(`${this.baseUrl}/me/adaccounts`, {
-                params: {
-                    access_token: this.accessToken,
-                    fields: 'id,name,balance,funding_source_details'
+            let allAccounts = [];
+            let url = `${this.baseUrl}/me/adaccounts`;
+            let params = {
+                access_token: this.accessToken,
+                fields: 'id,name,balance,funding_source_details'
+            };
+            while (url) {
+                const response = await axios.get(url, { params });
+                allAccounts = allAccounts.concat(response.data.data);
+                // Verifica se há próxima página
+                if (response.data.paging && response.data.paging.next) {
+                    url = response.data.paging.next;
+                    params = {}; // O link já contém todos os parâmetros
+                } else {
+                    url = null;
                 }
-            });
-            return response.data.data;
+            }
+            return allAccounts;
         } catch (error) {
             console.error('Erro ao buscar Ad Accounts do usuário:', error.response?.data || error.message);
             throw error;
