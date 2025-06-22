@@ -6,7 +6,7 @@ Adicione estas variáveis no Railway (ou seu servidor):
 
 ```
 # Token de acesso do Facebook/Meta
-ACCESS_TOKEN=seu_token_aqui
+ACCESS_TOKEN=195df297f23943d8df92a95019e8e12d195df297f23943d8df92a95019e8e12d
 
 # Configurações do Twilio para WhatsApp
 TWILIO_ACCOUNT_SID=seu_account_sid_aqui
