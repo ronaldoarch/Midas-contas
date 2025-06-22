@@ -10,7 +10,7 @@ ACCESS_TOKEN=195df297f23943d8df92a95019e8e12d195df297f23943d8df92a95019e8e12d
 
 # Configurações do Twilio para WhatsApp
 TWILIO_ACCOUNT_SID=seu_account_sid_aqui
-TWILIO_AUTH_TOKEN=seu_auth_token_aqui
+TWILIO_AUTH_TOKEN=195df297f23943d8df92a95019e8e12d
 TWILIO_WHATSAPP_NUMBER=whatsapp:+1234567890
 
 # Número padrão do WhatsApp (fallback)
