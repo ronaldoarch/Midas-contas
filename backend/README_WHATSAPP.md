@@ -6,11 +6,11 @@ Adicione estas variáveis no Railway (ou seu servidor):
 
 ```
 # Token de acesso do Facebook/Meta
-ACCESS_TOKEN=EAAMlFg6NFM0BOZBt26YdseFrZBpZAP1M4RhpZA9ZA1ERVnyCDOZAFg6DK17NH6bFaCjJ3RFtCZC6UW6uY0hqTiWkEjnqmWubZAmf8acfhRI3HevSmBckWJSUuTFU602G9DRZBTJdWDXuepixNOQsRiP8MfmLSR62H6gShH9A3hyN5CB8GgD0HuQ3BGn9ZBMemtvqaWvAEPN7N1wHIpmFKU
+ACCESS_TOKEN=seu_token_aqui
 
 # Configurações do Twilio para WhatsApp
 TWILIO_ACCOUNT_SID=seu_account_sid_aqui
-TWILIO_AUTH_TOKEN=195df297f23943d8df92a95019e8e12d
+TWILIO_AUTH_TOKEN=seu_auth_token_aqui
 TWILIO_WHATSAPP_NUMBER=whatsapp:+1234567890
 
 # Número padrão do WhatsApp (fallback)
