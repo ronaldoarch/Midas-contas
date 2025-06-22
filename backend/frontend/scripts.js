@@ -23,7 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
             ${account.type === 'CREDIT_CARD' ? `<p>Status do Cartão: ${account.cardStatus}</p>` : ''}
             <p>Saldo: ${account.balance}</p>
             ${account.hasAlert ? `<p class="alert-message">${account.alertMessage}</p>` : ''}
-            <button class="minimize-btn" data-id="${account.id}">Minimizar</button>
+            <div class="card-actions">
+                <button class="minimize-btn" data-id="${account.id}">Minimizar</button>
+                <button class="add-balance-btn" onclick="window.open('https://business.facebook.com/ads/payment/?act=${account.id}', '_blank')">
+                    Adicionar Saldo
+                </button>
+            </div>
         `;
         card.innerHTML = content;
         return card;

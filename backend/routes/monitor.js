@@ -1,8 +1,62 @@
 const express = require('express');
 const router = express.Router();
 const metaService = require('../services/metaService');
+const whatsappService = require('../services/whatsappService');
+const alertScheduler = require('../services/alertScheduler');
 const { checkPixBalance, checkCardStatus, formatBalance } = require('../utils/alertUtils');
 const util = require('util');
+
+// Armazenamento simples dos números de WhatsApp (em produção, use um banco de dados)
+let managerPhoneNumbers = {};
+
+// Endpoint para configurar número de WhatsApp do gestor
+router.post('/setManagerPhone', (req, res) => {
+    try {
+        const { accountId, phoneNumber } = req.body;
+        
+        if (!accountId || !phoneNumber) {
+            return res.status(400).json({ error: 'accountId e phoneNumber são obrigatórios' });
+        }
+
+        managerPhoneNumbers[accountId] = phoneNumber;
+        alertScheduler.setManagerPhoneNumber(accountId, phoneNumber);
+        
+        res.json({ 
+            success: true, 
+            message: `Número de WhatsApp configurado para conta ${accountId}` 
+        });
+    } catch (error) {
+        console.error('Erro ao configurar número:', error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
+
+// Endpoint para listar números configurados
+router.get('/managerPhones', (req, res) => {
+    res.json({ managerPhoneNumbers });
+});
+
+// Endpoint para testar envio de WhatsApp
+router.post('/testWhatsApp', async (req, res) => {
+    try {
+        const { accountId, phoneNumber } = req.body;
+        
+        if (!accountId || !phoneNumber) {
+            return res.status(400).json({ error: 'accountId e phoneNumber são obrigatórios' });
+        }
+
+        const success = await whatsappService.sendAlert(accountId, 15.00, phoneNumber);
+        
+        if (success) {
+            res.json({ success: true, message: 'Mensagem de teste enviada com sucesso!' });
+        } else {
+            res.status(500).json({ error: 'Erro ao enviar mensagem de teste' });
+        }
+    } catch (error) {
+        console.error('Erro ao testar WhatsApp:', error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
 
 router.get('/checkAllAccounts', async (req, res) => {
     try {
@@ -58,7 +112,8 @@ router.get('/checkAllAccounts', async (req, res) => {
                 cardStatus: details.funding_source_details?.funding_source_status || 'N/A',
                 balance: saldoFinal,
                 hasAlert: false,
-                alertMessage: ''
+                alertMessage: '',
+                whatsapp: managerPhoneNumbers[details.id] || null
             };
 
             // Verificar alertas

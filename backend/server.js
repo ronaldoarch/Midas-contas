@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const monitorRoutes = require('./routes/monitor');
+const alertScheduler = require('./services/alertScheduler');
 const path = require('path');
 
 const app = express();
@@ -23,4 +24,9 @@ app.get('*', (req, res) => {
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
+    
+    // Iniciar agendador de alertas
+    if (process.env.ENABLE_WHATSAPP_ALERTS === 'true') {
+        alertScheduler.start();
+    }
 }); 
