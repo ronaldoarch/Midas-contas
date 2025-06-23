@@ -16,16 +16,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const card = document.createElement('div');
         card.className = `account-card ${account.hasAlert ? 'alert' : 'ok'}`;
         
+        // Remover prefixo 'act_' do ID se existir
+        const accountIdSemPrefixo = account.id.replace('act_', '');
         const content = `
             <h3>${account.hasAlert ? '🔴' : '✅'} Conta: ${account.id}</h3>
             <p>Nome: ${account.name}</p>
             <p>Tipo: ${account.type}</p>
             ${account.type === 'CREDIT_CARD' ? `<p>Status do Cartão: ${account.cardStatus}</p>` : ''}
             <p>Saldo: ${account.balance}</p>
-            ${account.hasAlert ? `<p class="alert-message">${account.alertMessage}</p>` : ''}
-            <div class="card-actions">
-                <button class="minimize-btn" data-id="${account.id}">Minimizar</button>
-                <button class="add-balance-btn" onclick="window.open('https://business.facebook.com/ads/payment/?act=${account.id}', '_blank')">
+            ${account.hasAlert ? `<p class=\"alert-message\">${account.alertMessage}</p>` : ''}
+            <div class=\"card-actions\">
+                <button class=\"minimize-btn\" data-id=\"${account.id}\">Minimizar</button>
+                <button class=\"add-balance-btn\" onclick=\"window.open('https://business.facebook.com/ads/payment/?act=${accountIdSemPrefixo}', '_blank')\">
                     Adicionar Saldo
                 </button>
             </div>
