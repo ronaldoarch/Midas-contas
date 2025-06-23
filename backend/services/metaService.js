@@ -53,20 +53,27 @@ class MetaService {
     async getUserAdAccounts() {
         try {
             let allAccounts = [];
-            let url = `${this.baseUrl}/me/adaccounts`;
-            let params = {
-                access_token: this.accessToken,
-                fields: 'id,name,balance,funding_source_details'
-            };
-            while (url) {
-                const response = await axios.get(url, { params });
-                allAccounts = allAccounts.concat(response.data.data);
-                // Verifica se há próxima página
-                if (response.data.paging && response.data.paging.next) {
-                    url = response.data.paging.next;
-                    params = {}; // O link já contém todos os parâmetros
-                } else {
-                    url = null;
+            // Buscar todos os BMs do usuário
+            const businessManagers = await this.getBusinessManagers();
+            for (const bm of businessManagers) {
+                const businessId = bm.id;
+                // Buscar contas de anúncios desse BM
+                let url = `${this.baseUrl}/${businessId}/owned_ad_accounts`;
+                let params = {
+                    access_token: this.accessToken,
+                    fields: 'id,name,balance,funding_source_details'
+                };
+                while (url) {
+                    const response = await axios.get(url, { params });
+                    // Adicionar o business_id em cada conta
+                    const accountsWithBM = response.data.data.map(acc => ({ ...acc, business_id: businessId }));
+                    allAccounts = allAccounts.concat(accountsWithBM);
+                    if (response.data.paging && response.data.paging.next) {
+                        url = response.data.paging.next;
+                        params = {};
+                    } else {
+                        url = null;
+                    }
                 }
             }
             return allAccounts;

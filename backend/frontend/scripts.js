@@ -18,6 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Remover prefixo 'act_' do ID se existir
         const accountIdSemPrefixo = account.id.replace('act_', '');
+        // Montar URL de recarga com business_id
+        const urlRecarga = `https://business.facebook.com/billing_hub/accounts/details?asset_id=${accountIdSemPrefixo}&business_id=${account.business_id}&placement=standalone&payment_account_id=${accountIdSemPrefixo}`;
         const content = `
             <h3>${account.hasAlert ? '🔴' : '✅'} Conta: ${account.id}</h3>
             <p>Nome: ${account.name}</p>
@@ -27,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ${account.hasAlert ? `<p class=\"alert-message\">${account.alertMessage}</p>` : ''}
             <div class=\"card-actions\">
                 <button class=\"minimize-btn\" data-id=\"${account.id}\">Minimizar</button>
-                <button class=\"add-balance-btn\" onclick=\"window.open('https://business.facebook.com/ads/payment/?act=${accountIdSemPrefixo}', '_blank')\">
+                <button class=\"add-balance-btn\" onclick=\"window.open('${urlRecarga}', '_blank')\">
                     Adicionar Saldo
                 </button>
             </div>
